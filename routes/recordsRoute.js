@@ -1,7 +1,8 @@
 const Route = require("express").Router()
-const {getRecords, postRecord, putRecord,deleteRecord}  = require("../controllers/recordsController")
+const {getRecords,getRecord, postRecord, putRecord,deleteRecord}  = require("../controllers/recordsController")
 
 Route.get("/",getRecords)
+Route.get("/:id", getRecord)
 Route.post("/",postRecord)
 
 /* Route.route("/")
