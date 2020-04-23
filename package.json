@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
+    "seed":"node seed/seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -12,9 +13,11 @@
   "dependencies": {
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "mongoose": "^5.9.10"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "nodemon": "^2.0.3"
   }
 }
