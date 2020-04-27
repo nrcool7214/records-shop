@@ -1,5 +1,4 @@
 const createError= require("http-errors")
-const db= require("../models/db")
 const User =require("../models/userSchema")
 
 
