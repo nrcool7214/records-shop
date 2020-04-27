@@ -13,10 +13,10 @@ const UserSchema = new Schema({
 } ,{
     toObject:{
         virtuals:true
-    },
+    }/* ,
     toJSON:{
         virtuals:true
-    }
+    } */
 })
 
 UserSchema.virtual("fullName").get(function(){
