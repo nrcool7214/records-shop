@@ -1,46 +1,73 @@
 const createError= require("http-errors")
-const db= require("../models/db")
+const Record = require("../models/recordSchema")
 
 
-exports.getRecords= (req,res,next)=>{
-    let records = db.get("records").value()
-    res.json({success:true, records: records})
+exports.getRecords= async(req,res,next)=>{
+    try{
+        const records = await Record.find()
+        res.json({success:true, records: records})
+    }
+    catch(err){
+        next(err)
+    }
+    
 }
 
-exports.getRecord=(req,res,next)=>{
+exports.getRecord=async(req,res,next)=>{
    const {id} = req.params 
-    let record= db.get("records").find({id}).value()
-    res.json({success:true, record:record})
+   try{
+       const record= await Record.findById(id)
+       if(!record) throw createError(404)
+       res.json({success:true, record:record})
+   }
+   catch(err){
+       next(err)
+   }
+    
 }
 
-exports.postRecord=(req,res,next)=>{
-    console.log(req.body)
-
-    db.get("records")
-    .push(req.body)
-    .last()
-    .assign({id:new Date().toString()})
-    .write()
+exports.postRecord=async(req,res,next)=>{
+    
+    try{
+        const record = new Record(req.body)
+        await record.save()
+        res.json({success:true,record:record }) 
+    }
+    catch(err){
+        next(err)
+    }
+   
 
     
-    res.json({success:true,record:req.body })
+   
 }
 
-exports.putRecord=(req,res,next)=>{
+exports.putRecord=async(req,res,next)=>{
     const {id} = req.params
     const record= req.body
-    record.id = new Date().toString()
-    db.get("records").find({id}).assign(record).write()
+    
+    try{
+        const updatedRecord = await Record.findByIdAndUpdate(id,record, {new:true})
+        if(!updatedRecord) throw createError(404)
+        res.json({success:true, record:updatedRecord})
+    }
+    catch(err){
+        next(err)
+    }
 
-    res.json({success:true, record:record})
+
 
 }
-exports.deleteRecord=(req,res,next)=>{
-    console.log(req.params.id)
-    if(req.params.id!=="1"){
-       next(createError(500))
-    }
+exports.deleteRecord=async(req,res,next)=>{
     const {id} =req.params
-   let record =  db.get("records").remove({id}).write()
-    res.json({success:true,record:record})
+    try{
+        const record = await Record.findByIdAndDelete(id)
+        if(!record) throw createError(404)
+        res.json({success:true,record:record})
+    }
+    catch(err){
+        next(err)
+    }
+
+    
 }
