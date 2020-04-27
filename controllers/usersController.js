@@ -1,46 +1,64 @@
 const createError= require("http-errors")
-const db= require("../models/db")
+const User =require("../models/userSchema")
 
 
-exports.getUsers= (req,res,next)=>{
-    let users = db.get("users").value()
-    res.json({success:true, users: users})
-}
-
-exports.getUser=(req,res,next)=>{
-   const {id} = req.params 
-    let user= db.get("users").find({id}).value()
-    res.json({success:true, user:user})
-}
-
-exports.postUser=(req,res,next)=>{
-    console.log(req.body)
-
-    db.get("users")
-    .push(req.body)
-    .last()
-    .assign({id:new Date().toString()})
-    .write()
-
+exports.getUsers= async(req,res,next)=>{
+    try{
+        const users = await User.find()
+        res.json({success:true, users: users})
+    }
+    catch(err){
+        next(err)
+    }
     
-    res.json({success:true,user:req.body })
 }
 
-exports.putUser=(req,res,next)=>{
+exports.getUser=async(req,res,next)=>{
+   const {id} = req.params 
+    try{
+        const user = await User.findById(id)
+        if(!user) throw createError(404)
+        res.json({success:true, user:user})
+    }
+    catch(err){
+        next(err)
+    }
+    
+}
+
+exports.postUser=async(req,res,next)=>{
+    try{
+        const user = new User(req.body)
+        await user.save()
+        res.json({success:true,user:user })
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+exports.putUser=async(req,res,next)=>{
     const {id} = req.params
     const user= req.body
-    user.id = new Date().toString()
-    db.get("users").find({id}).assign(user).write()
-
-    res.json({success:true, user:user})
-
-}
-exports.deleteUser=(req,res,next)=>{
-    console.log(req.params.id)
-    if(req.params.id!=="1"){
-       next(createError(500))
+    try{
+        const updateUser = await User.findByIdAndUpdate(id, user, {new:true})
+        if(!updateUser) throw createError(500)
+         res.json({success:true, user:updateUser})
     }
+    catch(err){
+        next(err)
+    }
+    
+}
+exports.deleteUser=async(req,res,next)=>{
     const {id} =req.params
-   let user =  db.get("users").remove({id}).write()
-    res.json({success:true,user:user})
+    try{
+        const user= await User.findByIdAndDelete(id)
+        if(!user) throw createError(404)
+        res.json({success:true,user:user})
+    }catch(err){
+        next(err)
+    }
+
+   
 }
