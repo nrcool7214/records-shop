@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const {Schema} = mongoose; 
+const AddressSchema= require("./addressSchema")
 
 const UserSchema = new Schema({
     firstName: {type: String, required:true},
@@ -8,7 +9,9 @@ const UserSchema = new Schema({
 
     email:{type:String, required:true},
 
-    password:{type:String, required:true}
+    password:{type:String, required:true},
+
+    address:AddressSchema
 
 } ,{
     toObject:{

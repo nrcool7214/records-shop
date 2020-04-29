@@ -8,9 +8,9 @@ const indexRoute = require("./routes/indexRoute")
 const recordsRoute =require("./routes/recordsRoute")
 const usersRoute = require("./routes/usersRoute")
 const ordersRoute = require("./routes/ordersRoute")
+const {setCors} = require("./middleware/security")
 
-
-const port = process.env.PORT ||  3001; 
+const port = process.env.PORT ||  3002; 
 
 mongoose.connect("mongodb://127.0.0.1:27017/record-shop-live",{ useNewUrlParser: true ,useUnifiedTopology: true , useFindAndModify:false})
 mongoose.connection.on("error",(err)=>console.log(err))
@@ -19,6 +19,7 @@ mongoose.connection.on("open", ()=>console.log("database connected"))
 
 app.use(express.json())
 app.use(logger("dev"))
+app.use(setCors)
 
 app.use("/", indexRoute)
 

@@ -4,8 +4,15 @@ const Record = require("../models/recordSchema")
 
 exports.getRecords= async(req,res,next)=>{
     try{
-        const records = await Record.find()
+        const value = req.header("test")
+        if(value==="123"){
+            const records = await Record.find()
         res.json({success:true, records: records})
+        }
+        else{
+            throw createError(404)
+        }
+        
     }
     catch(err){
         next(err)
