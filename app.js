@@ -23,9 +23,9 @@ app.use(setCors)
 
 app.use("/", indexRoute)
 
-app.use("/records",recordsRoute)
+app.use("/records", recordsRoute)
 app.use("/orders", ordersRoute)
-app.use("/users",usersRoute)
+app.use("/users", usersRoute)
 
 
 
