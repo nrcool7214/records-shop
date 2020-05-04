@@ -1,5 +1,6 @@
 const createError= require("http-errors")
 const User =require("../models/userSchema")
+const jwt = require("jsonwebtoken")
 
 
 exports.getUsers= async(req,res,next)=>{
@@ -29,8 +30,12 @@ exports.getUser=async(req,res,next)=>{
 exports.postUser=async(req,res,next)=>{
     try{
         const user = new User(req.body)
+        const token = user.generateAuthToken()
         await user.save()
-        res.json({success:true,user:user })
+
+        const data = user.getPublicFields()
+
+        res.header("x-auth",token).json({success:true,user:data })
     }
     catch(err){
         next(err)
@@ -65,11 +70,17 @@ exports.deleteUser=async(req,res,next)=>{
 exports.login=async(req,res,next)=>{
     const {email, password}= req.body
 
+
     try{
-        const user = await User.findOne({email,password})
-         if(!user) throw createError(404)
-        res.header("test","123")
-        res.json({success:true,user:user})
+        const user = await User.findOne({email})
+
+        const valid = await user.checkPassword(password)
+         if(!valid) throw createError(403)
+         
+         let token = user.generateAuthToken() 
+         const data = user.getPublicFields()
+
+      res.header("x-auth",token).json({success:true,user:data})
         }
     catch(err){
             next(err)
