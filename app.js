@@ -4,6 +4,7 @@ const createError = require("http-errors")
 const mongoose =require("mongoose")
 const logger = require("morgan")
 const env=require("./config/config")
+const CookieParser= require("cookie-parser")
 console.log(env)
 
 const indexRoute = require("./routes/indexRoute")
@@ -12,16 +13,18 @@ const usersRoute = require("./routes/usersRoute")
 const ordersRoute = require("./routes/ordersRoute")
 const {setCors} = require("./middleware/security")
 
+
 const port = process.env.PORT ||  3002; 
 
 mongoose.connect(env.db,{ useNewUrlParser: true ,useUnifiedTopology: true , useFindAndModify:false})
 mongoose.connection.on("error",(err)=>console.log(err))
 mongoose.connection.on("open", ()=>console.log("database connected"))
 
-
+app.use(CookieParser())
 app.use(express.json())
 app.use(logger("dev"))
 app.use(setCors)
+app.use(express.static("client/build"))
 
 app.use("/", indexRoute)
 
