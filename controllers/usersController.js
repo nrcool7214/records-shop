@@ -35,7 +35,7 @@ exports.postUser=async(req,res,next)=>{
 
         const data = user.getPublicFields()
 
-        res.header("x-auth",token).json({success:true,user:data })
+        res.cookie("x-auth",token).json({success:true,user:data })
     }
     catch(err){
         next(err)
@@ -80,7 +80,7 @@ exports.login=async(req,res,next)=>{
          let token = user.generateAuthToken() 
          const data = user.getPublicFields()
 
-      res.header("x-auth",token).json({success:true,user:data})
+      res.cookie("x-auth",token).json({success:true,user:data})
         }
     catch(err){
             next(err)
