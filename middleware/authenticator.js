@@ -3,8 +3,9 @@ const createError = require("http-errors")
 
 
 const auth =async(req,res,next)=>{
-    const token = req.header("x-auth")
-    /* console.log(token) */
+    console.log("test1")
+    const token = req.cookies["x-auth"]
+
 
     try{
         const user = await User.findByToken(token)
